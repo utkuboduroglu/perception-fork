@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+
+# HERE ARE SOME DEFAULT VALUES FOR THE SCRIPT
+# IN THE FUTURE, WE CAN ADD ENVIRONMENT VARIABLE SUPPORT FOR THESE
+DEV_COUNT=2
+# create logs directory just in case
+mkdir -p dummylogs
+LOG_FILE=dummylogs/dummycam.$(date +%H%M).log
+
+# read in the video file in question
+if [ "$1" == "" ]; then
+	echo "Please specify a file." 1>&2;
+	exit
+fi
+
+if ! [ -e "$1" ]; then
+	echo "The file you specified does not exist or cannot be accessed." 1>&2;
+	exit
+fi
+
+## start off simple: create a single video device off v4l2loopback
+# check whether v4l2loopback is running
+if [ "$(lsmod | grep -E '^v4l2loopback')" == "" ]; then
+	echo "v4l2loopback is not running. Please sudo to run it."
+    sudo -k modprobe v4l2loopback devices=$DEV_COUNT
+	if [ "$(lsmod | grep -E '^v4l2loopback')" == "" ]; then
+		echo "Failed to run v4l2loopback." 1>&2;
+		exit
+	fi
+fi
+
+# get a list of all dummy devices
+DEVICES=$(v4l2-ctl --list-devices  |\
+    sed -n '/v4l2loopback/,/^$/p' |\
+    grep -v v4l2loopback |\
+    sed 's/\s//g; /^[[:space:]]*$/d')
+
+# pick the first available device
+while IFS= read -r line; do
+    DEVICE_NAME=$line
+    if [ "$(fuser $DEVICE_NAME)" == "" ]; then
+        break
+    fi
+    DEVICE_NAME="NO_DEVICE"
+done <<< "$DEVICES"
+
+if [ $DEVICE_NAME == "NO_DEVICE" ]; then
+    echo "No devices are available." 1>&2;
+    exit
+fi
+
+# check for other users
+if [ "$(fuser $DEVICE_NAME)" != "" ]; then
+	echo -e "Someone is already using the device $DEVICE_NAME.\n" \
+		    "Please make sure no one is using the device before continuing.\n" 1>&2;
+	exit
+fi
+
+## and pipe the specified footage to the device
+echo -e "Writing output to device:\n"$DEVICE_NAME
+ffmpeg -nostdin -re -vsync vfr -i "$1" -f v4l2 $DEVICE_NAME > $LOG_FILE 2>&1
