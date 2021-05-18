@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+### GNU bash, version 5.1.4(1)-release (x86_64-pc-linux-gnu)
+### ffmpeg version n4.4 Copyright (c) 2000-2021 the FFmpeg developers
+###   built with gcc 10.2.0 (GCC)
+### grep (GNU grep) 3.6
 
 # HERE ARE SOME DEFAULT VALUES FOR THE SCRIPT
 # IN THE FUTURE, WE CAN ADD ENVIRONMENT VARIABLE SUPPORT FOR THESE
