@@ -1,0 +1,21 @@
+# ignore all IDE configs
+*/.idea/
+.idea
+
+# ignore all virtualenvs, pycache files
+venv38
+*/__pycache__
+
+# don't keep any figures we output
+process/figures
+process/data/
+process/raccoon_data/
+predictions.*
+
+# maybe don't store data in Github for now, use Drive instead
+data/obj
+data/*.weights
+
+# discard any darknet logs
+*/bad.list
+bad.list
