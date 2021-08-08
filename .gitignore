@@ -2,6 +2,9 @@
 */.idea/
 .idea
 
+# ignore all logs
+dummylogs
+
 # ignore all virtualenvs, pycache files
 venv38
 */__pycache__
@@ -15,6 +18,9 @@ predictions.*
 # maybe don't store data in Github for now, use Drive instead
 data/obj
 data/*.weights
+data/*.jpg
+data/*.h264
+data/*.mp4
 
 # discard any darknet logs
 */bad.list
