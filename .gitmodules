@@ -1,4 +1,7 @@
 [submodule "darknet"]
-	path = darknet
+	path = submodules/darknet
 	url = https://github.com/AlexeyAB/darknet
     ignore = dirty
+[submodule "submodules/pytorch-YOLOv4"]
+	path = submodules/pytorch-YOLOv4
+	url = https://github.com/Tianxiaomo/pytorch-YOLOv4
