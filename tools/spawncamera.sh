@@ -62,4 +62,4 @@ fi
 
 ## and pipe the specified footage to the device
 echo -e "Writing output to device:\n"$DEVICE_NAME
-ffmpeg -nostdin -re -vsync vfr -i "$1" -f v4l2 $DEVICE_NAME > $LOG_FILE 2>&1
+ffmpeg -nostdin -re -stream_loop -1 -vsync vfr -i "$1" -f v4l2 $DEVICE_NAME > $LOG_FILE 2>&1
