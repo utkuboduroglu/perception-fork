@@ -6,14 +6,15 @@ sys.path.insert(1, './submodules/pytorch-YOLOv4/')
 from tool.utils import *
 from tool.torch_utils import *
 from tool.darknet2pytorch import Darknet
-import argparse
+
+from process.iparse import get_args
 
 """hyper parameters"""
 # disable CUDA for normal computers,
 # REMEMBER TO ENABLE THIS FOR THE CAR
 use_cuda = False
 
-def detect_cv2_camera(cfgfile, weightfile):
+def detect_cv2_camera(cfgfile, weightfile, v_device):
     import cv2
     m = Darknet(cfgfile)
 
@@ -24,20 +25,17 @@ def detect_cv2_camera(cfgfile, weightfile):
     if use_cuda:
         m.cuda()
 
-    cap = cv2.VideoCapture(-1)
+    cap = cv2.VideoCapture(v_device)
     # cap = cv2.VideoCapture("./test.mp4")
-    cap.set(3, 1280)
-    cap.set(4, 720)
+
+    # sets width/height
+    cap.set(3, 832)
+    cap.set(4, 416)
     print("Starting the YOLO loop...")
 
-    num_classes = m.num_classes
-    if num_classes == 20:
-        namesfile = 'data/voc.names'
-    elif num_classes == 80:
-        namesfile = 'data/coco.names'
-    else:
-        namesfile = 'data/x.names'
-    class_names = load_class_names(namesfile)
+    # we do this because we know the dataset is coco,
+    # replace this with our own once we can generate datasets
+    class_names = load_class_names('data/coco.names')
 
     while True:
         ret, img = cap.read()
@@ -56,22 +54,6 @@ def detect_cv2_camera(cfgfile, weightfile):
 
     cap.release()
 
-def get_args():
-    parser = argparse.ArgumentParser('Test your image or video by trained model.')
-    parser.add_argument('-cfgfile', type=str, default='./cfg/yolov4.cfg',
-                        help='path of cfg file', dest='cfgfile')
-    parser.add_argument('-weightfile', type=str,
-                        default='./checkpoints/Yolov4_epoch1.pth',
-                        help='path of trained model.', dest='weightfile')
-    # the default value here kinda breaks things
-    parser.add_argument('-imgfile', type=str,
-                        default='./data/mscoco2017/train2017/190109_180343_00154162.jpg',
-                        help='path of your image file.', dest='imgfile')
-    args = parser.parse_args()
-
-    return args
-
-
 if __name__ == '__main__':
     args = get_args()
-    detect_cv2_camera(args.cfgfile, args.weightfile)
+    detect_cv2_camera(args.cfgfile, args.weightfile, args.v_device)
