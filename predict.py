@@ -8,13 +8,14 @@ from tool.torch_utils import *
 from tool.darknet2pytorch import Darknet
 
 from process.iparse import get_args
+from process.image import plot_boxes_cv2
 
 """hyper parameters"""
 # disable CUDA for normal computers,
 # REMEMBER TO ENABLE THIS FOR THE CAR
 use_cuda = False
 
-def detect_cv2_camera(cfgfile, weightfile, v_device):
+def detect_cv2_camera(cfgfile, weightfile, v_device, drawmode):
     import cv2
     m = Darknet(cfgfile)
 
@@ -47,13 +48,17 @@ def detect_cv2_camera(cfgfile, weightfile, v_device):
         finish = time.time()
         print('Predicted in %f seconds.' % (finish - start))
 
-        result_img = plot_boxes_cv2(img, boxes[0], savename=None, class_names=class_names)
+        if drawmode:
+            result_img = plot_boxes_cv2(img, boxes[0], savename=None, class_names=class_names)
+            # display FPS
+            result_img = cv2.putText(result_img, str(int(1/(finish-start))),
+                                     (20, 60), cv2.FONT_HERSHEY_SIMPLEX, 2, (0,0,0), 1)
 
-        cv2.imshow('Yolo demo', result_img)
-        cv2.waitKey(1)
+            cv2.imshow('Yolo demo', result_img)
+            cv2.waitKey(1)
 
     cap.release()
 
 if __name__ == '__main__':
     args = get_args()
-    detect_cv2_camera(args.cfgfile, args.weightfile, args.v_device)
+    detect_cv2_camera(args.cfgfile, args.weightfile, args.v_device, args.draw)
