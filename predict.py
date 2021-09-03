@@ -51,10 +51,14 @@ def detect_cv2_camera(cfgfile, weightfile, v_device, drawmode):
         if drawmode:
             result_img = plot_boxes_cv2(img, boxes[0], savename=None, class_names=class_names)
             # display FPS
+            fps_label = str(int(1/(finish-start)))
+            text_size, _ = cv2.getTextSize(fps_label, cv2.FONT_HERSHEY_SIMPLEX, 1.5, 1)
+            tx, ty = text_size
+            result_img = cv2.rectangle(result_img, (20, 60-ty), (20+tx, 60), (0,0,0), -1)
             result_img = cv2.putText(result_img, str(int(1/(finish-start))),
-                                     (20, 60), cv2.FONT_HERSHEY_SIMPLEX, 2, (0,0,0), 1)
+                                     (20, 60), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (255,255,255), 1)
 
-            cv2.imshow('Yolo demo', result_img)
+            cv2.imshow('YOLOv4 prediction', result_img)
             cv2.waitKey(1)
 
     cap.release()

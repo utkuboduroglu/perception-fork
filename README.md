@@ -4,7 +4,8 @@ This is the official Github repository for the perception pipeline of the METU R
 ## Notes
 * For a quickstart on `git`, check out [using `git`](https://htmlpreview.github.io/?https://github.com/utkuboduroglu/dev-toolkit-docs/blob/master/using-git/README.html).
 * For a reference on writing proper commit messages, check out [Conventional commits](https://www.conventionalcommits.org/en/v1.0.0/#summary).
-
+* Remove save to file features from the code and add it as a final command in predict.py
+* Add class names parameter support.
 
 ## How to predict
 We rely on 2 submodules for running our YOLOv4 predictions: `Darknet` and `Tianxiaomo/Pytorch-YOLOv4`. Here are the use cases for these modules:
