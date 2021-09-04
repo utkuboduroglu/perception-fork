@@ -4,24 +4,25 @@ This is the official Github repository for the perception pipeline of the METU R
 ## Notes
 * For a quickstart on `git`, check out [using `git`](https://htmlpreview.github.io/?https://github.com/utkuboduroglu/dev-toolkit-docs/blob/master/using-git/README.html).
 * For a reference on writing proper commit messages, check out [Conventional commits](https://www.conventionalcommits.org/en/v1.0.0/#summary).
-* Remove save to file features from the code and add it as a final command in predict.py
-* Add class names parameter support.
+* For training on Colab, check out [the Jupyter notebook for training yolov4](https://gist.github.com/utkuboduroglu/bc5eaac95062f4f28db553f2b8fe0caf)
+* For creating Darknet configs & additional files, check out [AlexeyAB's Darknet repo](https://github.com/AlexeyAB/darknet#how-to-train-to-detect-your-custom-objects)
 
 ## How to predict
 We rely on 2 submodules for running our YOLOv4 predictions: `Darknet` and `Tianxiaomo/Pytorch-YOLOv4`. Here are the use cases for these modules:
 
 * `Darknet` for general training on datasets. We convert our dataset to the Darknet format and train. This can be done on any local machine, but for convenience and performance, should be done on cloud systems like Google Colab and/or Paperspace.
+    - As an additional note, Paperspace does not generally allow for Darknet training, but Colab does; please check the section for training on Google Colab for more details.
 * `Tianxiaomo YOLOv4` for the base implementation of Darknet on Python. We use the code as a draft for our own program and compile with CUDA and OpenCV. We use the webcam code for live predictions, but do note that running the prediction code on most machines is slow.
-* For our specialized use, we should convert Tianxiaomo's code into a module and import it into our code (at first). We don't need to modify Darknet, it's only for the training process of the dataset.
-    - For speed improvements, we can use datasets with small amounts of labels and use yolov4-tiny. The method for processing datasets is present in [Darknet's github page](https://github.com/AlexeyAB/darknet#how-to-train-to-detect-your-custom-objects).
 
-## Building a Dockerfile for model training
-Here are some guidelines for our Dockerfile to be used during training:
+## Training our dataset on Google Colab
+The whole process of training our dataset can be done on Google Colab, without needing additional hardware or subscriptions etc. The process can be split into two steps: preparing the dataset and training.
 
-* We should use Ubuntu as a base image.
-* We should build Darknet from scratch, we need to be able to use OpenCV and CUDA during the training process to improve our times.
-* If we gain access to FSOCO, we can use that dataset directly. If not, we need to find a way to import our datasets into the Dockerfile as well.
-* We need to collect metrics during training to be able to determine the best model possible and evaluate fitness etc., so find a way to collect said metrics off of training with Darknet.
+1. For preparing our dataset, follow the steps provided by [Darknet's github page](https://github.com/AlexeyAB/darknet#how-to-train-to-detect-your-custom-objects). The main steps to follow are creating the `yolo-*.cfg` file, `obj.data` file and `obj.names` file. Furthermore, the dataset needs to be prepared in a special way that each training, validation and testing subset needs to be split into its own subfolder, and each image must be accompanied with a text file with the same name containing the annotation data of the image. Finally, for each subset, there must be a text file specifying the absolute paths of the image files in the subset. These can be made as diverse as possible as creating different permutations of data may be used for cross-validation.
+1. After the dataset is prepared, it must be uploaded to Google Drive for the training process. The model training folder must contain the appropriate folders for an easier workflow, specifically: a `cfg` folder for containing the `yolo-*.cfg` files, a `data` folder for containing our training data, our files `obj.data`, `obj.names`, `train-*.txt`, `valid-*.txt`, `test-*.txt`, and a `backup` folder for storing our pre-weights and weights files. After such a directory hierarchy is enforced, one can follow the steps provided in [our Colab train notebook](https://gist.github.com/utkuboduroglu/bc5eaac95062f4f28db553f2b8fe0caf) to train the model. Roughly, this notebook sets up the Drive directory, compiles Darknet for usage and starts training the model. For continued training, the Colab window must remain opened and monitored periodically to prevent timing out. The final output is a `*.weights` file, stored in the `backup` folder.
+1. After training is complete, we only need to retrieve the `yolo-*.cfg` file, the `obj.data`, `obj.names` files and the `yolo-*.weights` files to plug into `predict.py`.
+
+## TODO
+* Remove save to file features from the code and add it as a final command in predict.py
 
 ## Resources
 The following items are resources we chose to follow during the development process. This list will be updated periodically.
