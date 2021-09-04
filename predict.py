@@ -10,12 +10,13 @@ from tool.darknet2pytorch import Darknet
 from process.iparse import get_args
 from process.image import plot_boxes_cv2
 
-"""hyper parameters"""
-# disable CUDA for normal computers,
-# REMEMBER TO ENABLE THIS FOR THE CAR
+# Default Hyperparameters
+## Use CUDA for GPU acceleration, enable this for the car itself
 use_cuda = False
+## Draw OpenCV graphics, disabling may give FPS boost
+draw_graphics = True
 
-def detect_cv2_camera(cfgfile, weightfile, v_device, drawmode):
+def detect_cv2_camera(cfgfile, weightfile, v_device, namefile):
     import cv2
     m = Darknet(cfgfile)
 
@@ -36,7 +37,7 @@ def detect_cv2_camera(cfgfile, weightfile, v_device, drawmode):
 
     # we do this because we know the dataset is coco,
     # replace this with our own once we can generate datasets
-    class_names = load_class_names('data/coco.names')
+    class_names = load_class_names(namefile)
 
     while True:
         ret, img = cap.read()
@@ -48,7 +49,7 @@ def detect_cv2_camera(cfgfile, weightfile, v_device, drawmode):
         finish = time.time()
         print('Predicted in %f seconds.' % (finish - start))
 
-        if drawmode:
+        if draw_graphics:
             result_img = plot_boxes_cv2(img, boxes[0], savename=None, class_names=class_names)
             # display FPS
             fps_label = str(int(1/(finish-start)))
@@ -65,4 +66,8 @@ def detect_cv2_camera(cfgfile, weightfile, v_device, drawmode):
 
 if __name__ == '__main__':
     args = get_args()
-    detect_cv2_camera(args.cfgfile, args.weightfile, args.v_device, args.draw)
+    # we set the hyperparameters according to our cmdline arguments
+    use_cuda = args.cuda
+    draw_graphics = args.draw
+
+    detect_cv2_camera(args.cfgfile, args.weightfile, args.v_device, args.namefile)
