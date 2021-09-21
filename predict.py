@@ -16,7 +16,7 @@ use_cuda = False
 ## Draw OpenCV graphics, disabling may give FPS boost
 draw_graphics = True
 
-def detect_cv2_camera(cfgfile, weightfile, v_device, namefile):
+def detect_cv2_camera(v_device, cfgfile, weightfile, namefile):
     import cv2
     m = Darknet(cfgfile)
 
@@ -66,8 +66,12 @@ def detect_cv2_camera(cfgfile, weightfile, v_device, namefile):
 
 if __name__ == '__main__':
     args = get_args()
+
+    ## Maybe add check for environment variables?
+    #if os.environ['DRVLSS_MODEL_PATH']:
+
     # we set the hyperparameters according to our cmdline arguments
     use_cuda = args.cuda
     draw_graphics = args.draw
 
-    detect_cv2_camera(args.cfgfile, args.weightfile, args.v_device, args.namefile)
+    detect_cv2_camera(args.v_device, args.cfgfile, args.weightfile, args.namefile)
