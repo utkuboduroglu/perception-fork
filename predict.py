@@ -10,47 +10,51 @@ from tool.darknet2pytorch import Darknet
 from process.iparse import get_args
 from process.image import plot_boxes_cv2
 
+import process.metapredict as mpred
+
 # Default Hyperparameters
 ## Use CUDA for GPU acceleration, enable this for the car itself
 use_cuda = False
 ## Draw OpenCV graphics, disabling may give FPS boost
 draw_graphics = True
 
-def detect_cv2_camera(v_device, cfgfile, weightfile, namefile):
-    import cv2
-    m = Darknet(cfgfile)
+# instead of just looping in the predict method, initialize the predict method
+# with the __init__ call and just run the predictions once
+class YOLOv4(mpred.Predictor):
+    # specify a logger
+    logger = print
 
-    m.print_network()
-    m.load_weights(weightfile)
-    print('Loading weights from %s... Done!' % (weightfile))
+    def init_network(self):
+        self.m = Darknet(self.cfgfile)
 
-    if use_cuda:
-        m.cuda()
+        # does this use a print call?
+        self.m.print_network()
+        self.m.load_weights(self.weightfile)
+        self.logger('Loading weights from %s... Done!' % (self.weightfile))
 
-    cap = cv2.VideoCapture(v_device)
-    # cap = cv2.VideoCapture("./test.mp4")
+        if use_cuda:
+            self.m.cuda()
 
-    # sets width/height
-    cap.set(3, 832)
-    cap.set(4, 416)
-    print("Starting the YOLO loop...")
+        self.logger("Starting the YOLO loop...")
 
-    # we do this because we know the dataset is coco,
-    # replace this with our own once we can generate datasets
-    class_names = load_class_names(namefile)
+        # we do this because we know the dataset is coco,
+        # replace this with our own once we can generate datasets
+        self.class_names = load_class_names(self.namefile)
 
-    while True:
+    def predict(self, cap):
+        import cv2
+
         ret, img = cap.read()
-        sized = cv2.resize(img, (m.width, m.height))
+        sized = cv2.resize(img, (self.m.width, self.m.height))
         sized = cv2.cvtColor(sized, cv2.COLOR_BGR2RGB)
 
         start = time.time()
-        boxes = do_detect(m, sized, 0.4, 0.6, use_cuda)
+        boxes = do_detect(self.m, sized, 0.4, 0.6, self.use_cuda)
         finish = time.time()
-        print('Predicted in %f seconds.' % (finish - start))
+        self.logger('Predicted in %f seconds.' % (finish - start))
 
-        if draw_graphics:
-            result_img = plot_boxes_cv2(img, boxes[0], savename=None, class_names=class_names)
+        if self.draw_graphics:
+            result_img = plot_boxes_cv2(img, boxes[0], savename=None, class_names=self.class_names)
             # display FPS
             fps_label = str(int(1/(finish-start)))
             text_size, _ = cv2.getTextSize(fps_label, cv2.FONT_HERSHEY_SIMPLEX, 1.5, 1)
@@ -62,16 +66,32 @@ def detect_cv2_camera(v_device, cfgfile, weightfile, namefile):
             cv2.imshow('YOLOv4 prediction', result_img)
             cv2.waitKey(1)
 
-    cap.release()
+        return boxes
+
 
 if __name__ == '__main__':
+    import cv2
     args = get_args()
 
     ## Maybe add check for environment variables?
     #if os.environ['DRVLSS_MODEL_PATH']:
 
-    # we set the hyperparameters according to our cmdline arguments
-    use_cuda = args.cuda
-    draw_graphics = args.draw
+    cap = cv2.VideoCapture(args.v_device)
+    # cap = cv2.VideoCapture("./test.mp4")
 
-    detect_cv2_camera(args.v_device, args.cfgfile, args.weightfile, args.namefile)
+    # sets width/height
+    cap.set(3, 832)
+    cap.set(4, 416)
+
+    p = YOLOv4(
+        args.cfgfile,
+        args.weightfile,
+        args.namefile,
+        use_cuda=args.cuda,
+        draw_graphics=args.draw
+    )
+
+    while True:
+        p.predict(cap)
+
+    cap.release()
