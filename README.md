@@ -12,6 +12,12 @@ Our codebase has a lot of elements, and for the sake of preserving generality, w
 
 * `DRVLSS_PERCEPTION_PATH`: The root directory for the perception pipeline. Some of our code requires that this variable be set to run.
 
+## The data in use
+Currently, all data in use is from rosbags as we have no other source for acquiring datasets/test materials. More specifically, the following are the data we have started using:
+
+* [The Sanderson car park dataset](https://uoe-my.sharepoint.com/:u:/g/personal/eufs_ed_ac_uk/EVAsPplOLPVGpl-fFmNsjs0BA0Iy3KKz7g1xZJFtk4vpSQ?e=89E7EL) from the [Edinburgh University FS team](https://gitlab.com/eufs/datasets).
+* [The AMZ Driverless 2017 dataset](https://www.dropbox.com/s/7x75ks6vo2npfv3/AMZ_driverless_2017_dataset.bag.tar.gz?dl=0) from the [AMZ Driverless github page](https://github.com/AMZ-Driverless/fsd-resources#amz_driverless_2017).
+
 ## Resources
 The following items are resources we chose to follow during the development process. This list will be updated periodically.
 
