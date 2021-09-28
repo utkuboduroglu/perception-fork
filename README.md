@@ -4,6 +4,13 @@ This is the official Github repository for the perception pipeline of the METU R
 ## Notes
 * For a quickstart on `git`, check out [using `git`](https://htmlpreview.github.io/?https://github.com/utkuboduroglu/dev-toolkit-docs/blob/master/using-git/README.html).
 * For a reference on writing proper commit messages, check out [Conventional commits](https://www.conventionalcommits.org/en/v1.0.0/#summary).
+* Export the environment variable `DRVLSS_PERCEPTION_PATH` for easier reference to relative paths in our program.
+* `bag_to_images.py` is an external tool that helps extract images from rosbags. It can (and should) be used to extract datasets from rosbags we come across (like EUFS or AMZ Driverless' datasets) and prepare a dataset.
+
+## Environment variables
+Our codebase has a lot of elements, and for the sake of preserving generality, we have to refrain from using absolute paths and/or relative paths inside our codebase. Instead, we should use environment variables so that we can keep our code portable. Here are some environment variables that we should set:
+
+* `DRVLSS_PERCEPTION_PATH`: The root directory for the perception pipeline. Some of our code requires that this variable be set to run.
 
 ## Resources
 The following items are resources we chose to follow during the development process. This list will be updated periodically.
