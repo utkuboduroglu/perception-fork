@@ -4,6 +4,8 @@ This is the official Github repository for the perception pipeline of the METU R
 ## Notes
 * For a quickstart on `git`, check out [using `git`](https://htmlpreview.github.io/?https://github.com/utkuboduroglu/dev-toolkit-docs/blob/master/using-git/README.html).
 * For a reference on writing proper commit messages, check out [Conventional commits](https://www.conventionalcommits.org/en/v1.0.0/#summary).
+* Export the environment variable `DRVLSS_PERCEPTION_PATH` for easier reference to relative paths in our program.
+* `bag_to_images.py` is an external tool that helps extract images from rosbags. It can (and should) be used to extract datasets from rosbags we come across (like EUFS or AMZ Driverless' datasets) and prepare a dataset.
 * For training on Colab, check out [the Jupyter notebook for training yolov4](https://gist.github.com/utkuboduroglu/bc5eaac95062f4f28db553f2b8fe0caf)
 * For creating Darknet configs & additional files, check out [AlexeyAB's Darknet repo](https://github.com/AlexeyAB/darknet#how-to-train-to-detect-your-custom-objects)
 
@@ -21,8 +23,19 @@ The whole process of training our dataset can be done on Google Colab, without n
 1. After the dataset is prepared, it must be uploaded to Google Drive for the training process. The model training folder must contain the appropriate folders for an easier workflow, specifically: a `cfg` folder for containing the `yolo-*.cfg` files, a `data` folder for containing our training data, our files `obj.data`, `obj.names`, `train-*.txt`, `valid-*.txt`, `test-*.txt`, and a `backup` folder for storing our pre-weights and weights files. After such a directory hierarchy is enforced, one can follow the steps provided in [our Colab train notebook](https://gist.github.com/utkuboduroglu/bc5eaac95062f4f28db553f2b8fe0caf) to train the model. Roughly, this notebook sets up the Drive directory, compiles Darknet for usage and starts training the model. For continued training, the Colab window must remain opened and monitored periodically to prevent timing out. The final output is a `*.weights` file, stored in the `backup` folder.
 1. After training is complete, we only need to retrieve the `yolo-*.cfg` file, the `obj.data`, `obj.names` files and the `yolo-*.weights` files to plug into `predict.py`.
 
+## Environment variables
+Our codebase has a lot of elements, and for the sake of preserving generality, we have to refrain from using absolute paths and/or relative paths inside our codebase. Instead, we should use environment variables so that we can keep our code portable. Here are some environment variables that we should set:
+
+* `DRVLSS_PERCEPTION_PATH`: The root directory for the perception pipeline. Some of our code requires that this variable be set to run.
+
 ## TODO
 * Remove save to file features from the code and add it as a final command in predict.py
+
+## The data in use
+Currently, all data in use is from rosbags as we have no other source for acquiring datasets/test materials. More specifically, the following are the data we have started using:
+
+* [The Sanderson car park dataset](https://uoe-my.sharepoint.com/:u:/g/personal/eufs_ed_ac_uk/EVAsPplOLPVGpl-fFmNsjs0BA0Iy3KKz7g1xZJFtk4vpSQ?e=89E7EL) from the [Edinburgh University FS team](https://gitlab.com/eufs/datasets).
+* [The AMZ Driverless 2017 dataset](https://www.dropbox.com/s/7x75ks6vo2npfv3/AMZ_driverless_2017_dataset.bag.tar.gz?dl=0) from the [AMZ Driverless github page](https://github.com/AMZ-Driverless/fsd-resources#amz_driverless_2017).
 
 ## Resources
 The following items are resources we chose to follow during the development process. This list will be updated periodically.
