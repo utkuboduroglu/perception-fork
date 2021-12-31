@@ -1,6 +1,10 @@
 import sys
+import os
 # this is required to load the submodule library
-sys.path.insert(1, './submodules/pytorch-YOLOv4/')
+sys.path.insert(1,
+                os.path.join(os.environ['DRVLSS_PERCEPTION_PATH'],
+                             'submodules/pytorch-YOLOv4/')
+                )
 
 # Pycharm warns for this but it executes
 from tool.utils import *
