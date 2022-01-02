@@ -1,9 +1,13 @@
 # METU Racing Driverless Perception pipeline
 This is the official Github repository for the perception pipeline of the METU Racing's Driverless project. Some of the primary goals of this pipeline is solving for object detection through visual and LIDAR data.
 
-## Notes
+## Guidelines for using this repository (Important!)
 * For a quickstart on `git`, check out [using `git`](https://htmlpreview.github.io/?https://github.com/utkuboduroglu/dev-toolkit-docs/blob/master/using-git/README.html).
+* For understanding the general workflow of our repository, please refer to this document on [getting started with the Perception pipeline](https://gist.github.com/utkuboduroglu/9b37f261d457146cc6dfd9f641fa0c7b).
+* For rules on contributing to the repository, please first read [this guide on contributing to git repositories](https://github.com/utkuboduroglu/git-contrib-guide).
 * For a reference on writing proper commit messages, check out [Conventional commits](https://www.conventionalcommits.org/en/v1.0.0/#summary).
+
+## Notes
 * Export the environment variable `DRVLSS_PERCEPTION_PATH` for easier reference to relative paths in our program.
 * `bag_to_images.py` is an external tool that helps extract images from rosbags. It can (and should) be used to extract datasets from rosbags we come across (like EUFS or AMZ Driverless' datasets) and prepare a dataset.
 * For training on Colab, check out [the Jupyter notebook for training yolov4](https://gist.github.com/utkuboduroglu/bc5eaac95062f4f28db553f2b8fe0caf)
