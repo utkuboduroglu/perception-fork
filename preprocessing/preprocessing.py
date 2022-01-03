@@ -3,7 +3,7 @@ import numpy as np
 
 src = cv.imread(r'C:\Users\ereni\Desktop\deneme.png')
 
-s = 400 #size of the image
+s = 416
 
 def resize2Square(img, size, interpolation):
   h, w = img.shape[:2]
@@ -23,8 +23,19 @@ def resize2Square(img, size, interpolation):
 
 resized = resize2Square(src, s, cv.INTER_AREA)
 
+#CLAHE (Contrast Limited Adaptive Histogram Equalization)
+clahe = cv.createCLAHE(clipLimit=1., tileGridSize=(8,8))
+
+lab = cv.cvtColor(resized, cv.COLOR_BGR2LAB) 
+l, a, b = cv.split(lab)
+
+l2 = clahe.apply(l)
+
+lab = cv.merge((l2,a,b)) 
+final = cv.cvtColor(lab, cv.COLOR_LAB2BGR) 
+
 #denoising
-den = cv.fastNlMeansDenoisingColored(resized, None, 3, 3, 7, 21)
+den = cv.fastNlMeansDenoisingColored(final, None, 4, 4, 7, 21)
 
 #standardization
 imgg = den.astype('float32')
@@ -34,5 +45,6 @@ std = (imgg - imgg.mean(axis=(0, 1, 2), keepdims=True)) / imgg.std(axis=(0, 1, 2
 norm = (std - np.min(std)) / (np.max(std) - np.min(std))
 
 cv.imshow('source', src)
-cv.imshow('final', norm)
+cv.imshow('norm', norm)
 cv.waitKey(0)
+cv.destroyAllWindows()
