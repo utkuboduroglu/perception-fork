@@ -12,6 +12,7 @@ This is the official Github repository for the perception pipeline of the METU R
 * `bag_to_images.py` is an external tool that helps extract images from rosbags. It can (and should) be used to extract datasets from rosbags we come across (like EUFS or AMZ Driverless' datasets) and prepare a dataset.
 * For training on Colab, check out [the Jupyter notebook for training yolov4](https://gist.github.com/utkuboduroglu/bc5eaac95062f4f28db553f2b8fe0caf)
 * For creating Darknet configs & additional files, check out [AlexeyAB's Darknet repo](https://github.com/AlexeyAB/darknet#how-to-train-to-detect-your-custom-objects)
+* The location of Blender libraries `bpy` and `mathutils` depends on the Blender installation, which can be located [following this source](https://docs.blender.org/manual/en/dev/advanced/blender_directory_layout.html#blender-directory-layout)
 
 ## How to predict
 We rely on 2 submodules for running our YOLOv4 predictions: `Darknet` and `Tianxiaomo/Pytorch-YOLOv4`. Here are the use cases for these modules:
