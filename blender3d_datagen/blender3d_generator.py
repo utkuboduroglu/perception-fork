@@ -6,6 +6,7 @@ import mathutils
 import sys
 import numpy as np
 
+
 def spawnCamera(context):
     # we can generate new cameras with the following
     camera_data = bpy.data.cameras.new(name='Camera')

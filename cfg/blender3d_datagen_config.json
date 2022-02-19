@@ -1,0 +1,39 @@
+[
+  {
+    "3d_space_object_parameters": {
+      "object_max_dist": 10.0,
+      "object_rand_dist_type": "inverse_square",
+      "max_objects_in_scene": 100,
+      "object_radial_interval": [
+        0,
+        3.1415
+      ],
+      "prevent_collisions": true
+    },
+    "object_visual_details": {
+      "object_color_type": "mixed",
+      "object_yellow_dist": 0.55,
+      "object_blue_dist": 0.3,
+      "object_size_variation": 0
+    },
+    "3d_space_camera_parameters": {
+      "camera_height_dist": 0.2,
+      "camera_location": [
+        0,
+        0,
+        0
+      ],
+      "camera_vert_angle_dist": 0.1,
+      "camera_hor_angle_dist": 0.1
+    },
+    "3d_space_visual_parameters": {
+      "illumination_level_kelvin": 5700,
+      "sun_intensity": 3.0,
+      "scene_time_of_day_GMT": 1230
+    },
+    "3d_scene_misc_objects": [
+      {"name": "Camera1", "type": "camera", "location": [0, -1, 0], "rot_quaternion": [0, 0, 0, 0]},
+      {"name": "Cone1", "type": "cone_mesh", "location": [0, -1, -1], "rot_euler": [0, 0, 0]}
+    ]
+  }
+]
