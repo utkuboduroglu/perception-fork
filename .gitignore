@@ -25,3 +25,6 @@ data/*.mp4
 # discard any darknet logs
 */bad.list
 bad.list
+
+# discard any temp blender files
+*.blend1
