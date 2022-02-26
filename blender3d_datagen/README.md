@@ -9,3 +9,5 @@ This is a python module for generating visual/LIDAR datasets to be used with tra
 
 ## Notes
 * The script `run_in_blender.py` is designed to be used inside Blender; this script allows developing scripts with the use of an IDE.
+* The cones used in the actual competition has to comply with standards, which can be found to follow
+    ![FSG cone specs](./cone_specs.png)
