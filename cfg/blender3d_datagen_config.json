@@ -2,7 +2,7 @@
   "3d_space_object_parameters": {
     "object_max_dist": 10.0,
     "object_rand_dist_type": "inverse_square",
-    "max_objects_in_scene": 10,
+    "max_objects_in_scene": 100,
     "object_radial_interval": [
       0,
       0.25

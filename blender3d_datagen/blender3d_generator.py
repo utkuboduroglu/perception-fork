@@ -69,6 +69,41 @@ def projectedTupleToMeshes(positions, context, clampRange=None):
 
         context.active_object.select_set(False)
 
+def getUVcoordinates(point, cam_obj, cam):
+    from mathutils import Vector
+    norm = (cam_obj.matrix_world @ Vector((0,0,-1))).normalized()
+    up = (cam_obj.matrix_world @ Vector((0,1,0))).normalized()
+    right = (cam_obj.matrix_world @ Vector((1,0,0))).normalized()
+
+    focal_length = cam.lens
+    sensor_size = cam.sensor_width
+    sensor_high = cam.sensor_height
+
+    pt_length = focal_length/sensor_size
+
+    # we use these quantities to scale our image-space to a suitable interval
+    #img_scale_width = 2 * pt_length / cam_obj.location.magnitude
+    #img_scale_height = 2 * pt_length * sensor_high / (cam_obj.location.magnitude * sensor_size)
+
+    o_plane = cam_obj.location + pt_length * norm
+
+    s_length = ((o_plane @ norm) - (cam_obj.location @ norm))/((point - cam_obj.location) @ norm)
+
+    # there may be division by zero here
+    #if point @ norm == 0:
+    #    # this only happens when point is already in the linear space described
+    #    # by the unit vectors; in this case, we can just treat point as if it was on the image-plane
+    #    return Vector((point @ right, point @ up))
+    #s_length = (o_plane @ norm)/(point @ norm)
+
+    v_new = cam_obj.location + s_length * (point - cam_obj.location)
+
+    v_plane = v_new - o_plane
+    
+    u_coord = (v_plane @ right) * (2/sensor_size)
+    v_coord = (v_plane @ up) * (2/sensor_high)
+    return Vector((u_coord, v_coord))
+
 if __name__ == '__main__':
     # generate random triples in R^3 up to number of desired objects
     # and project them onto the xy-plane
